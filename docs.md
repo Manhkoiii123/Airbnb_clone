@@ -103,7 +103,8 @@ export default client;
 ```
 
 docs https://authjs.dev/getting-started/adapters/prisma
-tạo pages/api/[...nextauth].ts (pages ngang cấp với app)
+tạo pages/api/auth/[...nextauth].ts (pages ngang cấp với app)
+do next auth nó chưa hỗ trợ cho app router
 
 ```ts
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
@@ -148,7 +149,7 @@ export const authOptions: AuthOptions = {
           credentials.password,
           user.hashedPassword
         );
-        if (isCorrectPassword) {
+        if (!isCorrectPassword) {
           throw new Error("Invalid credentials");
         }
         return user;
@@ -206,4 +207,89 @@ const onSubmit: SubmitHandler<FieldValues> = (data) => {
       setIsLoading(false);
     });
 };
+```
+
+# login functional
+
+Hàm onsubmit của cái login modal dùng signIn của thư viện luôn
+
+```ts
+import { signIn } from "next-auth/react";
+const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  setIsLoading(true);
+  signIn("credentials", {
+    ...data,
+    redirect: false,
+  }).then((callback) => {
+    setIsLoading(false);
+    if (callback?.ok) {
+      router.refresh();
+      toast.success("Logged in");
+      loginModal.onClose();
+    }
+    if (callback?.error) {
+      toast.error(callback.error);
+    }
+  });
+};
+```
+
+lấy thông tin người dùng
+tạo app/actions/getCurrentUser.ts
+
+```ts
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { getServerSession } from "next-auth";
+import prisma from "@/app/libs/prismadb";
+
+export async function getSession() {
+  return await getServerSession(authOptions);
+}
+export default async function getCurrentUser() {
+  try {
+    const session = await getSession();
+    if (!session?.user?.email) return null;
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session.user.email as string,
+      },
+    });
+    if (!user) {
+      return null;
+    }
+    return user;
+  } catch (error) {
+    console.log("🚀 ~ getCurrentUser ~ error:", error);
+    return null;
+  }
+}
+```
+
+sử dụng bên layout.tsx (to nhất)
+
+```ts
+const user = await getCurrentUser();
+console.log("🚀 ~ user:", user);
+
+return (
+  <html lang="en">
+    <body className={font.className}>
+      <ClientOnly>
+        <ToasterProvider />
+        <RegisterModal />
+        <LoginModal />
+        <Navbar currentUser={user} />
+      </ClientOnly>
+      {children}
+    </body>
+  </html>
+);
+```
+
+dùng để render giao diện usermenu => ok
+logout
+
+```ts
+import { signOut } from "next-auth/react";
+<MenuItem onClick={() => signOut()} label="Logout" />;
 ```
