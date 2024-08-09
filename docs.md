@@ -48,9 +48,9 @@ model Account {
   access_token String @db.String
   expires_at Int?
   token_type String?
-  scopes String[]
-  id_token String @db.String
-  session_state String @db.String
+  scope String?
+  id_token String? @db.String
+  session_state String?
   user User @relation(fields: [userId],references: [id],onDelete:Cascade)
   @@unique([provider,providerAccountId])
 }
@@ -257,7 +257,13 @@ export default async function getCurrentUser() {
     if (!user) {
       return null;
     }
-    return user;
+    return {
+      ...user,
+      //fix lỗi plain object ...
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
+      emailVerified: user.emailVerified?.toISOString() || null,
+    };
   } catch (error) {
     console.log("🚀 ~ getCurrentUser ~ error:", error);
     return null;
@@ -278,12 +284,40 @@ return (
         <ToasterProvider />
         <RegisterModal />
         <LoginModal />
-        <Navbar currentUser={user} />
+        <Navbar currentUser={user} /> // lỗi ts do đã đưa cái updatedAt.. thành string
+        nhưng trong schema nó đã Date
       </ClientOnly>
       {children}
     </body>
   </html>
 );
+```
+
+khi sử dụng định kiểu dữ liệu
+
+```ts
+currentUser?: User | null;//dùng với cái cũ (return user) => lỗi ts
+```
+
+khi đó phỉa định lại type cho cái `getCurrentUser` trả về
+
+```ts
+import { User } from "@prisma/client";
+
+export type SafeUser = Omit<
+  User,
+  "createdAt" | "updatedAt" | "emailVerified"
+> & {
+  createdAt: string;
+  updatedAt: string;
+  emailVerified: string | null;
+};
+```
+
+khi đó dùng
+
+```ts
+currentUser?: SafeUser | null;
 ```
 
 dùng để render giao diện usermenu => ok
@@ -293,3 +327,19 @@ logout
 import { signOut } from "next-auth/react";
 <MenuItem onClick={() => signOut()} label="Logout" />;
 ```
+
+# social login
+
+1. github
+   vào githutb => setting => developer setting => oauthApp => new
+   điền => có được clientId và sercet
+   sau đó đến cái button lg github
+
+```ts
+onClick={() => signIn("github")}
+```
+
+2. googlo
+   vào google cloud => api & services => credentials => OAuth 2.0 client IDs
+   sau khi điền xong => creadentai => create o auth cliend id => Authorized redirect URIs
+điền cái ày http://localhost:3000/api/auth/callback/google
