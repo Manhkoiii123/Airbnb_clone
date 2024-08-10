@@ -342,4 +342,26 @@ onClick={() => signIn("github")}
 2. googlo
    vào google cloud => api & services => credentials => OAuth 2.0 client IDs
    sau khi điền xong => creadentai => create o auth cliend id => Authorized redirect URIs
-điền cái ày http://localhost:3000/api/auth/callback/google
+   điền cái ày http://localhost:3000/api/auth/callback/google
+
+# upload ảnh
+
+cách cài đặt : https://next.cloudinary.dev/installation
+env : https://console.cloudinary.com/pm/c-018d757ecb9d27ec1ea4e679bc9004/developer-dashboard (1)
+
+```ts
+<CldUploadWidget
+      onUpload={handleUpload}
+      uploadPreset="aaaa"
+      options={{
+        maxFiles: 1,
+      }}
+    >
+```
+
+lấy cái `uploadPreset` tại đâu
+
+- vào 1 chọn setting => upload => upload presets => add uploadpresets\
+- Signing Mode: đổi sang unsign
+- copy cái upload presetname
+- patse vào cái `uploadPreset="aaaa"` là ok
