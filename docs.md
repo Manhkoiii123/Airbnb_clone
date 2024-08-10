@@ -365,3 +365,81 @@ lấy cái `uploadPreset` tại đâu
 - Signing Mode: đổi sang unsign
 - copy cái upload presetname
 - patse vào cái `uploadPreset="aaaa"` là ok
+
+tạo bài viết
+
+```ts
+const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  if (step !== STEPS.PRICE) {
+    return onNext();
+  }
+  setIsLoading(true);
+  // API call to create a new listing
+  axios
+    .post("/api/listings", data)
+    .then(() => {
+      toast.success("Listing created successfully");
+      router.refresh();
+      reset();
+      setStep(STEPS.CATEGORY);
+      rentModal.onClose();
+    })
+    .catch((er) => {
+      toast.error("Something went wrong");
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+};
+```
+
+viết router handler
+
+```ts
+import { NextResponse } from "next/server";
+import prisma from "@/app/libs/prismadb";
+import getCurrentUser from "@/app/actions/getCurrentUser";
+export async function POST(req: Request) {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return NextResponse.error();
+  }
+
+  const body = await req.json();
+
+  const {
+    title,
+    description,
+    imageSrc,
+    category,
+    roomCount,
+    bathroomCount,
+    guestCount,
+    location,
+    price,
+  } = body;
+
+  Object.keys(body).forEach((value: any) => {
+    if (!body[value]) {
+      NextResponse.error();
+    }
+  });
+
+  const listing = await prisma.listing.create({
+    data: {
+      title,
+      description,
+      imageSrc,
+      category,
+      roomCount,
+      bathroomCount,
+      guestCount,
+      locationValue: location.value,
+      price: parseInt(price, 10),
+      userId: currentUser.id,
+    },
+  });
+
+  return NextResponse.json(listing);
+}
+```

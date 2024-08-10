@@ -13,7 +13,6 @@ interface ImageUploadProps {
 const ImageUpload = ({ onChange, value }: ImageUploadProps) => {
   const handleUpload = useCallback(
     (res: any) => {
-      console.log("Upload response:", res);
       if (res?.info?.secure_url) {
         onChange(res.info.secure_url);
       } else {
