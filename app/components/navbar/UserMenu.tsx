@@ -7,6 +7,7 @@ import useRegisterModal from "@/app/hooks/useRegisterModal";
 import useRentModal from "@/app/hooks/useRentModal";
 import { SafeUser } from "@/app/types";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 interface UserMenuProps {
@@ -20,6 +21,7 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
   const toggleOpen = useCallback(() => {
     setIsOpen((val) => !val);
   }, []);
+  const router = useRouter();
   const onRent = useCallback(() => {
     if (!currentUser) {
       return loginModal.onOpen();
@@ -51,18 +53,66 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
           <div className="flex flex-col cursor-pointer">
             {currentUser ? (
               <>
-                <MenuItem onClick={() => {}} label="My Trips" />
-                <MenuItem onClick={() => {}} label="My favourites" />
-                <MenuItem onClick={() => {}} label="My revervations" />
-                <MenuItem onClick={() => {}} label="My properties" />
-                <MenuItem onClick={rentModal.onOpen} label="Airbnb my home" />
+                <MenuItem
+                  onClick={() => {
+                    router.push("/trips");
+                    setIsOpen(false);
+                  }}
+                  label="My Trips"
+                />
+                <MenuItem
+                  onClick={() => {
+                    router.push("/favorites");
+                    setIsOpen(false);
+                  }}
+                  label="My favorites"
+                />
+                <MenuItem
+                  onClick={() => {
+                    router.push("/reservations");
+                    setIsOpen(false);
+                  }}
+                  label="My reservations"
+                />
+                <MenuItem
+                  onClick={() => {
+                    router.push("/properties");
+                    setIsOpen(false);
+                  }}
+                  label="My properties"
+                />
+                <MenuItem
+                  onClick={() => {
+                    rentModal.onOpen();
+                    setIsOpen(false);
+                  }}
+                  label="Airbnb my home"
+                />
                 <hr />
-                <MenuItem onClick={() => signOut()} label="Logout" />
+                <MenuItem
+                  onClick={() => {
+                    signOut();
+                    setIsOpen(false);
+                  }}
+                  label="Logout"
+                />
               </>
             ) : (
               <>
-                <MenuItem onClick={loginModal.onOpen} label="Login" />
-                <MenuItem onClick={registerModal.onOpen} label="Sign up" />
+                <MenuItem
+                  onClick={() => {
+                    loginModal.onOpen();
+                    setIsOpen(false);
+                  }}
+                  label="Login"
+                />
+                <MenuItem
+                  onClick={() => {
+                    registerModal.onOpen();
+                    setIsOpen(false);
+                  }}
+                  label="Sign up"
+                />
               </>
             )}
           </div>
