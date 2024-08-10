@@ -13,7 +13,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow.src,
 });
 interface MapProps {
-  center: number[];
+  center?: number[];
 }
 const Map = ({ center }: MapProps) => {
   return (
