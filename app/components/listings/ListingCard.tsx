@@ -1,7 +1,7 @@
 "use client";
 
 import useCountry from "@/app/hooks/useCountry";
-import { SafeUser } from "@/app/types";
+import { SafeListings, SafeUser } from "@/app/types";
 import { Listing, Revervation } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
@@ -10,7 +10,7 @@ import Image from "next/image";
 import HeartButton from "@/app/components/HeartButton";
 import Button from "@/app/components/Button";
 interface ListingCardProps {
-  data: Listing;
+  data: SafeListings;
   revervation?: Revervation;
   onAction?: (id: string) => void;
   actionLabel?: string;
@@ -60,7 +60,7 @@ const ListingCard = ({
   return (
     <div
       className="col-span-1 cursor-pointer group"
-      onClick={() => router.push(`/listings${data.id}`)}
+      onClick={() => router.push(`/listings/${data.id}`)}
     >
       <div className="flex flex-col gap-2 w-full">
         <div className="aspect-square w-full relative overflow-hidden rounded-xl">
