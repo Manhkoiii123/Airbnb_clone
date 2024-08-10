@@ -1,7 +1,7 @@
 "use client";
 
 import useCountry from "@/app/hooks/useCountry";
-import { SafeListings, SafeUser } from "@/app/types";
+import { SafeListings, SafeRevervation, SafeUser } from "@/app/types";
 import { Listing, Revervation } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
@@ -11,7 +11,7 @@ import HeartButton from "@/app/components/HeartButton";
 import Button from "@/app/components/Button";
 interface ListingCardProps {
   data: SafeListings;
-  revervation?: Revervation;
+  revervation?: SafeRevervation;
   onAction?: (id: string) => void;
   actionLabel?: string;
   actionId?: string;
