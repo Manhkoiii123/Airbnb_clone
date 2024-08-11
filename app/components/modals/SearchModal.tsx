@@ -14,6 +14,9 @@ import { formatISO } from "date-fns";
 import Heading from "@/app/components/Heading";
 import Calender from "@/app/components/input/Calender";
 import Counter from "@/app/components/input/Counter";
+const Map = dynamic(() => import("@/app/components/Map"), {
+  ssr: false,
+});
 enum STEP {
   LOCATION = 0,
   DATE = 1,
@@ -34,10 +37,6 @@ const SearchModal = () => {
     endDate: new Date(),
     key: "selection",
   });
-  const Map = useMemo(
-    () => dynamic(() => import("@/app/components/Map"), { ssr: false }),
-    [location]
-  );
 
   const onBack = useCallback(() => {
     setStep((value) => value - 1);

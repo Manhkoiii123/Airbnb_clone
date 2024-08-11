@@ -1,12 +1,10 @@
 import EmptyState from "@/app/components/EmptyState";
 import ClientOnly from "@/app/components/ClientOnly";
 import getCurrentUser from "@/app/actions/getCurrentUser";
-import getReservation from "@/app/actions/getReservations";
-import TripsClient from "@/app/trips/TripsClient";
 import { getListings } from "@/app/actions/getListings";
 import PropertiesClient from "@/app/properties/PropertiesClient";
 
-const page = async () => {
+const PropertiesPage = async () => {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -36,4 +34,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default PropertiesPage;
