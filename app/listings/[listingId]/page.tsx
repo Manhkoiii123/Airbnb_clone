@@ -4,6 +4,7 @@ import getReservation from "@/app/actions/getReservations";
 import ClientOnly from "@/app/components/ClientOnly";
 import EmptyState from "@/app/components/EmptyState";
 import ListingClient from "@/app/listings/[listingId]/ListingClient";
+export const dynamic = "force-dynamic";
 interface IParams {
   listingId?: string;
 }

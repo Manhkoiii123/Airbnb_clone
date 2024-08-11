@@ -13,6 +13,9 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+const Map = dynamic(() => import("@/app/components/Map"), {
+  ssr: false,
+});
 import toast from "react-hot-toast";
 enum STEPS {
   CATEGORY = 0,
@@ -53,14 +56,7 @@ const RentModal = () => {
   const roomCount = watch("roomCount");
   const imageSrc = watch("imageSrc");
   const bathroomCount = watch("bathroomCount");
-  const Map = useMemo(
-    () =>
-      dynamic(() => import("@/app/components/Map"), {
-        ssr: false,
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [location]
-  );
+
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
       shouldDirty: true,

@@ -3,7 +3,8 @@ import ClientOnly from "@/app/components/ClientOnly";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import getReservation from "@/app/actions/getReservations";
 import ReservationsClient from "@/app/reservations/ReservationsClient";
-const page = async () => {
+export const dynamic = "force-dynamic";
+const ReservationsPage = async () => {
   const currentUser = await getCurrentUser();
   if (!currentUser) {
     return (
@@ -39,4 +40,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default ReservationsPage;

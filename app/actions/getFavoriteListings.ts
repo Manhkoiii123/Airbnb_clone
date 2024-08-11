@@ -1,3 +1,4 @@
+"use server";
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 export default async function getFavoriteListings() {

@@ -3,7 +3,8 @@ import ClientOnly from "@/app/components/ClientOnly";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import getFavoriteListings from "@/app/actions/getFavoriteListings";
 import FavoritesClient from "@/app/favorites/FavoritesClient";
-const page = async () => {
+export const dynamic = "force-dynamic";
+const FavoritesPage = async () => {
   const currentUser = await getCurrentUser();
   if (!currentUser) {
     return (
@@ -31,4 +32,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default FavoritesPage;

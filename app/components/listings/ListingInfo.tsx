@@ -7,6 +7,7 @@ import { SafeUser } from "@/app/types";
 import dynamic from "next/dynamic";
 import { IconType } from "react-icons";
 
+// Tải component 'Map' chỉ ở client-side
 const Map = dynamic(() => import("@/app/components/Map"), {
   ssr: false,
 });
@@ -26,6 +27,7 @@ interface ListingInfoProps {
       }
     | undefined;
 }
+
 const ListingInfo = ({
   bathroomCount,
   category,
@@ -36,7 +38,7 @@ const ListingInfo = ({
   user,
 }: ListingInfoProps) => {
   const { getByValue } = useCountry();
-  const coordinates = getByValue(locationValue)?.latlng!;
+  const coordinates = getByValue(locationValue)?.latlng;
 
   return (
     <div className="col-span-4 flex flex-col gap-6">
@@ -70,7 +72,7 @@ const ListingInfo = ({
       <hr />
       <div className="text-lg font-light text-neutral-500">{description}</div>
       <hr />
-      <Map center={coordinates} />
+      {coordinates && <Map center={coordinates} />}
     </div>
   );
 };

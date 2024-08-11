@@ -1,9 +1,13 @@
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { getServerSession } from "next-auth";
 import prisma from "@/app/libs/prismadb";
-
+import { getServerSession } from "next-auth/next";
 export async function getSession() {
-  return await getServerSession(authOptions);
+  try {
+    return await getServerSession(authOptions);
+  } catch (error) {
+    console.log("🚀 aaaa", error);
+    return null;
+  }
 }
 export default async function getCurrentUser() {
   try {
@@ -24,7 +28,7 @@ export default async function getCurrentUser() {
       emailVerified: user.emailVerified?.toISOString() || null,
     };
   } catch (error) {
-    console.log("🚀 ~ getCurrentUser ~ error:", error);
+    console.log("🚀 ", error);
     return null;
   }
 }
